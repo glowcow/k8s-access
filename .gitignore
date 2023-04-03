@@ -1,0 +1,8 @@
+#ignore dir
+**/__pycache__
+#ignore files
+*.crt
+*.key
+config
+admin.conf
+kube_conf.yaml

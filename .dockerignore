@@ -1,0 +1,5 @@
+.git
+.gitignore
+.gitlab-ci.yml
+developer.gitlab-ci.yml
+Dockerfile

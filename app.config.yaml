@@ -1,0 +1,25 @@
+clusters:
+  dev:
+    url: "https://cluster-dev:6443"
+    ca_data: <data in base64>
+    cluster_name : "kube-dev"
+    cluster_roles:
+      developer:
+        - cluster-observer
+      devops:
+        - cluster-observer
+        - devops
+      admin:
+        - cluster-admin
+  prod:
+    url: "https://cluster-prod:6443"
+    ca_data: <data in base64>
+    cluster_name : "kube-prod"
+    cluster_roles:
+      developer:
+        - cluster-observer
+      devops:
+        - cluster-observer
+        - devops
+      admin:
+        - cluster-admin

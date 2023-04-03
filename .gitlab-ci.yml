@@ -1,0 +1,63 @@
+stages:
+  - image
+  - app
+
+variables:
+  APP_IMAGE: glowcow/k8s-access:v1.1.1
+  DOCKER_IMAGE: docker:20.10.21
+  KUBECONFIG: /app/kube_conf.yaml
+
+build image:
+  stage: image
+  image: $DOCKER_IMAGE
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\./'
+      variables:
+        DOCKERFILE: ./Dockerfile
+        IMAGE: $DOCKERHUB_USERNAME/$CI_PROJECT_TITLE:$CI_COMMIT_TAG
+    - when: never
+  before_script:
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+  script:
+    - echo $IMAGE
+    - docker build -f $DOCKERFILE --network=host -t $IMAGE
+    - docker push $IMAGE
+    - docker rmi $IMAGE
+
+create_config:
+  stage: app
+  image: $APP_IMAGE
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - echo $KUBE_CONFIG | base64 -d > $KUBECONFIG
+    - cd /app
+    - 'echo "User: $USER | k8s Cluster: $CLUSTER | Role: $ROLE"'
+  script:
+    - python3 app.py $USER --cluster $CLUSTER --role $ROLE
+  after_script:
+    - cp /app/generated/config $CI_PROJECT_DIR/config
+  artifacts:
+    untracked: false
+    name: generated kube config
+    paths:
+      - config
+    expire_in: 5min
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CLUSTER != null && $USER != null && $ROLE != null'
+    - when: never
+
+bind_ns:
+  stage: app
+  image: $APP_IMAGE
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - echo $KUBE_CONFIG | base64 -d > $KUBECONFIG
+    - cd /app
+    - 'echo "User: $USER | k8s Cluster: $CLUSTER | Role: $RNS | Namespaces: $NS"'
+  script:
+    - python3 app.py $USER --cluster $CLUSTER --namespace $NS --rolens $RNS
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CLUSTER != null && $USER != null && $RNS != null && $NS != null'
+    - when: never

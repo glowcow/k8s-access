@@ -1,0 +1,69 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: namespace-developer
+  namespace: default
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - bindings
+    - componentstatuses
+    - configmaps
+    - endpoints
+    - events
+    - limitranges
+    - namespaces
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    - pods
+    - pods/log
+    - podtemplates
+    - replicationcontrollers
+    - resourcequotas
+    - serviceaccounts
+    - services
+    - secrets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - extensions
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups: 
+    - "apps"
+    resources: 
+    - deployments/scale
+    - replicasets/scale
+    verbs: 
+    - create
+    - delete
+    - get
+    - patch
+    - list
+    - watch
+    - update
+  - apiGroups:
+    - rbac.authorization.k8s.io
+    resources:
+    - clusterrolebindings
+    - clusterroles
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - batch
+    resources:
+    - '*'
+    verbs:
+    - get
+    - list
+    - watch
