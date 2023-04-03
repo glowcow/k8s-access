@@ -14,13 +14,14 @@ build image:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\./'
       variables:
         DOCKERFILE: ./Dockerfile
+        DOCKER_CONTEXT: ./
         IMAGE: $DOCKERHUB_USERNAME/$CI_PROJECT_TITLE:$CI_COMMIT_TAG
     - when: never
   before_script:
     - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
   script:
     - echo $IMAGE
-    - docker build -f $DOCKERFILE --network=host -t $IMAGE
+    - docker build -f $DOCKERFILE --network=host -t $IMAGE $DOCKER_CONTEXT
     - docker push $IMAGE
     - docker rmi $IMAGE
 
