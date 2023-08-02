@@ -1,9 +1,9 @@
-FROM python:3.9-slim-bullseye AS stage-1
+FROM python:3.10-slim-bookworm AS stage-1
 WORKDIR /builder
 COPY requirements.txt .
 RUN pip3 wheel --no-cache-dir --no-deps --wheel-dir /builder/wheels -r requirements.txt
 
-FROM python:3.9-slim-bullseye AS stage-2
+FROM python:3.10-slim-bookworm AS stage-2
 WORKDIR /app
 ARG TZ=Asia/Jerusalem
 ENV PYTHONUNBUFFERED=1

@@ -8,7 +8,7 @@ clusters:
         - cluster-observer
       devops:
         - cluster-observer
-        - devops
+        - cluster-devops
       admin:
         - cluster-admin
   prod:
@@ -20,6 +20,6 @@ clusters:
         - cluster-observer
       devops:
         - cluster-observer
-        - devops
+        - cluster-devops
       admin:
         - cluster-admin

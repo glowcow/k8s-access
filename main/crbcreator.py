@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 from kubernetes import client
+from kubernetes.client.rest import ApiException
 from main.colors import bc
 from main.kubeapi import KubeApi
+import yaml
 
 class KubernetesClusterRoleBinding:
 
@@ -22,6 +24,26 @@ class KubernetesClusterRoleBinding:
             name = self.user
         )
     ]
+
+    def create_clusterrole(self):
+        for cluster in self.clusters:
+            clusterroles = self.app_config["clusters"][cluster]["cluster_roles"][self.cluster_role]
+            for clusterole_ in clusterroles:
+                with open(f'templates/{clusterole_}.yaml', 'r') as f:
+                    role_data = yaml.safe_load(f)
+                metadata = role_data['metadata']
+                rules = [client.V1PolicyRule(api_groups=rule['apiGroups'], resources=rule['resources'], verbs=rule['verbs'])
+                         for rule in role_data['rules']]
+                try:
+                    kube_client = self.kube_clients[cluster]
+                    clusterrole = client.V1ClusterRole(metadata=client.V1ObjectMeta(**metadata), rules=rules)
+                    kube_client.create_cluster_role(body=clusterrole)
+                    print(f"{bc.GREEN}  :+:{cluster}:  ClusterRole {bc.ENDC}'{clusterole_}' {bc.GREEN}created{bc.ENDC}")
+                except ApiException as e:
+                    if e.status == 409:
+                        print(f"{bc.YELLOW}  :!:{cluster}:  ClusterRole {bc.ENDC}'{clusterole_}' {bc.YELLOW}already exists{bc.ENDC}")
+                    else:
+                        raise
 
     def get_clusterrolebinding(self, name, cluster):
         kube_client = self.kube_clients[cluster]

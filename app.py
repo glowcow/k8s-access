@@ -6,7 +6,7 @@ from main.usercreator import KubernetesUserCreator
 from main.crbcreator import KubernetesClusterRoleBinding
 from main.rbcreator import K8sRoleAndRoleBinding
 
-version = '1.1.1'
+version = '1.2.0'
 
 def read_config(file_path: str) -> dict:
     with open(file_path, 'r') as yaml_file:
@@ -24,6 +24,7 @@ def create_user_and_cluster_role_bindings(app_config: dict, user: str, clusters:
     user_creator.create_user()
 
     crb_creator = KubernetesClusterRoleBinding(app_config, user, cluster_list, role)
+    crb_creator.create_clusterrole()
     crb_creator.create_clusterrolebinding_if_not_exists()
 
 def create_namespace_roles_and_bindings(user: str, clusters: str, namespaces: str, role_name: str):
