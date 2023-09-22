@@ -6,7 +6,7 @@ Kubernetes RBAC Management Tool - This application allows you to create users, a
 
 ## Version
 
-![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat)
+![Version: 1.2.3](https://img.shields.io/badge/Version-1.2.3-informational?style=flat)
 
 ## Dependencies
 

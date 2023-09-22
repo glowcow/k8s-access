@@ -6,7 +6,7 @@ from main.usercreator import KubernetesUserCreator
 from main.crbcreator import KubernetesClusterRoleBinding
 from main.rbcreator import K8sRoleAndRoleBinding
 
-version = '1.2.0'
+version = '1.2.2'
 
 def read_config(file_path: str) -> dict:
     with open(file_path, 'r') as yaml_file:

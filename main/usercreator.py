@@ -129,6 +129,13 @@ class KubernetesUserCreator:
 
         kubeconfig_builder = KubeConfigBuilder()
 
+        clusters_config = self.app_config["clusters"]
+        chosen_clusters_config = {}
+
+        for cl in self.clusters:
+            if cl in clusters_config:
+                chosen_clusters_config[cl] = clusters_config[cl]
+
         kubeconfig_builder.save_kubeconfig(
             "generated/config",
             context_data=context_data,
